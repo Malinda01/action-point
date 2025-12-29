@@ -52,7 +52,7 @@ def process_meeting():
         
         # Configure the model to return JSON specifically
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-2.5-flash",
             generation_config={"response_mime_type": "application/json"}
         )
 
