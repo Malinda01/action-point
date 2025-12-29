@@ -7,7 +7,10 @@ from werkzeug.utils import secure_filename
 from openai import OpenAI
 
 # 1. Configuration & Setup
-load_dotenv()
+# load_dotenv()
+
+load_dotenv(override=True)
+
 app = Flask(__name__)
 CORS(app)  # Allow React (Port 3000) to talk to Flask (Port 5000)
 
