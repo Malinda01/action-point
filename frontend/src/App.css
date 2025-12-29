@@ -1,42 +1,141 @@
-#root {
-  max-width: 1280px;
+:root {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --primary: #3b82f6;
+  --danger: #ef4444;
+  --success: #22c55e;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: sans-serif;
+}
+
+.app-container {
+  max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 40px 20px;
+}
+
+header {
   text-align: center;
+  margin-bottom: 40px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.icon {
+  vertical-align: middle;
+  margin-right: 10px;
 }
 
-@keyframes logo-spin {
+/* Buttons */
+.btn {
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.1s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.start {
+  background: var(--primary);
+  color: white;
+}
+
+.stop {
+  background: var(--danger);
+  color: white;
+}
+
+.analyze {
+  background: var(--success);
+  color: white;
+  width: 100%;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Cards */
+.recorder-card,
+.result-card {
+  background: var(--card);
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+audio {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Tasks */
+.task-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border-left: 4px solid var(--primary);
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.task-title {
+  font-weight: bold;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+}
+
+.high {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+.medium {
+  background: #713f12;
+  color: #fde047;
+}
+
+.low {
+  background: #1e3a8a;
+  color: #93c5fd;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
