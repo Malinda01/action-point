@@ -1,6 +1,7 @@
 import os
 import json
 import whisper
+import requests
 import google.generativeai as genai
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -94,6 +95,49 @@ def process_meeting():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": str(e)}), 500
+
+
+# 4. Trello Integration
+@app.route('/api/create-trello-cards', methods=['POST'])
+def create_trello_cards():
+    data = request.json
+    tasks = data.get('tasks', [])
+    
+    # Get Keys from .env
+    API_KEY = os.getenv("TRELLO_API_KEY")
+    TOKEN = os.getenv("TRELLO_TOKEN")
+    LIST_ID = os.getenv("TRELLO_LIST_ID")
+
+    if not all([API_KEY, TOKEN, LIST_ID]):
+        return jsonify({"error": "Missing Trello credentials in .env"}), 500
+
+    created_cards = []
+    
+    for task in tasks:
+        # Construct the card Name and Description
+        card_name = f"{task['title']} ({task['assignee']})"
+        card_desc = f"**Priority:** {task['priority']}\n\n{task['description']}"
+        
+        # Trello API URL
+        url = "https://api.trello.com/1/cards"
+        
+        query = {
+            'key': API_KEY,
+            'token': TOKEN,
+            'idList': LIST_ID,
+            'name': card_name,
+            'desc': card_desc,
+            'pos': 'top'
+        }
+
+        response = requests.post(url, params=query)
+        
+        if response.status_code == 200:
+            created_cards.append(response.json())
+        else:
+            print(f"Failed to create card: {response.text}")
+
+    return jsonify({"status": "success", "created": created_cards})
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
