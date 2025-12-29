@@ -139,3 +139,19 @@ audio {
     transform: rotate(360deg);
   }
 }
+
+/* Add this to the bottom of App.css */
+.task-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.sync {
+  background-color: #0079bf;
+  /* Trello Blue */
+  color: white;
+  font-size: 14px;
+  padding: 8px 16px;
+}
