@@ -1,15 +1,15 @@
 import os
 import json
-import whisper
-import requests
-import google.generativeai as genai
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from dotenv import load_dotenv
-from werkzeug.utils import secure_filename
+import whisper  # type: ignore
+import requests  # type: ignore
+import google.generativeai as genai  # type: ignore
+from flask import Flask, request, jsonify  # type: ignore
+from flask_cors import CORS  # type: ignore
+from dotenv import load_dotenv  # type: ignore
+from werkzeug.utils import secure_filename  # type: ignore
 
 # 1. Configuration & Setup
-load_dotenv(override=True) # Forces reload of .env
+load_dotenv(override=True)  # Forces reload of .env
 app = Flask(__name__)
 CORS(app)
 
@@ -19,20 +19,21 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 # Load Local Whisper Model (This runs on your computer!)
 # 'base' is a good balance of speed and accuracy. Try 'small' if you want better results.
 print("Loading Whisper model... (this happens only once)")
-whisper_model = whisper.load_model("base") 
+whisper_model = whisper.load_model("base")
 
-UPLOAD_FOLDER = 'temp_uploads'
+UPLOAD_FOLDER = "temp_uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.route('/api/process-meeting', methods=['POST'])
+
+@app.route("/api/process-meeting", methods=["POST"])
 def process_meeting():
     print("... Incoming Audio File ...")
-    
-    if 'file' not in request.files:
+
+    if "file" not in request.files:
         return jsonify({"error": "No file part"}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
+
+    file = request.files["file"]
+    if file.filename == "":
         return jsonify({"error": "No selected file"}), 400
 
     filename = secure_filename(file.filename)
@@ -50,11 +51,11 @@ def process_meeting():
 
         # --- Step 3: Analyze (Google Gemini Free Tier) ---
         print("Analyzing with Gemini...")
-        
+
         # Configure the model to return JSON specifically
         model = genai.GenerativeModel(
             model_name="gemini-2.5-flash",
-            generation_config={"response_mime_type": "application/json"}
+            generation_config={"response_mime_type": "application/json"},
         )
 
         prompt = f"""
@@ -79,18 +80,20 @@ def process_meeting():
         """
 
         response = model.generate_content(prompt)
-        
+
         # Clean up the response text to ensure it's valid JSON
         analysis_data = json.loads(response.text)
 
         # --- Cleanup ---
         os.remove(filepath)
 
-        return jsonify({
-            "status": "success",
-            "transcript": transcript_text,
-            "analysis": analysis_data
-        })
+        return jsonify(
+            {
+                "status": "success",
+                "transcript": transcript_text,
+                "analysis": analysis_data,
+            }
+        )
 
     except Exception as e:
         print(f"Error: {e}")
@@ -98,11 +101,11 @@ def process_meeting():
 
 
 # 4. Trello Integration
-@app.route('/api/create-trello-cards', methods=['POST'])
+@app.route("/api/create-trello-cards", methods=["POST"])
 def create_trello_cards():
     data = request.json
-    tasks = data.get('tasks', [])
-    
+    tasks = data.get("tasks", [])
+
     # Get Keys from .env
     API_KEY = os.getenv("TRELLO_API_KEY")
     TOKEN = os.getenv("TRELLO_TOKEN")
@@ -112,26 +115,26 @@ def create_trello_cards():
         return jsonify({"error": "Missing Trello credentials in .env"}), 500
 
     created_cards = []
-    
+
     for task in tasks:
         # Construct the card Name and Description
         card_name = f"{task['title']} ({task['assignee']})"
         card_desc = f"**Priority:** {task['priority']}\n\n{task['description']}"
-        
+
         # Trello API URL
         url = "https://api.trello.com/1/cards"
-        
+
         query = {
-            'key': API_KEY,
-            'token': TOKEN,
-            'idList': LIST_ID,
-            'name': card_name,
-            'desc': card_desc,
-            'pos': 'top'
+            "key": API_KEY,
+            "token": TOKEN,
+            "idList": LIST_ID,
+            "name": card_name,
+            "desc": card_desc,
+            "pos": "top",
         }
 
         response = requests.post(url, params=query)
-        
+
         if response.status_code == 200:
             created_cards.append(response.json())
         else:
@@ -139,5 +142,6 @@ def create_trello_cards():
 
     return jsonify({"status": "success", "created": created_cards})
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run(debug=True, port=5000)
