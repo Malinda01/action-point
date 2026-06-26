@@ -23,6 +23,7 @@ export default function Login({ onSwitchView, onLoginSuccess }) {
   };
 
   return (
+    // UI starts here
     <div className="auth-container">
       <div className="auth-card login-card">
         <div className="auth-brand text-center">

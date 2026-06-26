@@ -25,6 +25,7 @@ export default function Signup({ onSwitchView }) {
   };
 
   return (
+    // UI starts here
     <div className="auth-container">
       <div className="auth-card signup-card">
         <div className="auth-brand">
