@@ -7,6 +7,8 @@ from flask import Flask, request, jsonify  # type: ignore
 from flask_cors import CORS  # type: ignore
 from dotenv import load_dotenv  # type: ignore
 from werkzeug.utils import secure_filename  # type: ignore
+from werkzeug.security import generate_password_hash, check_password_hash # Added for auth
+from pymongo import MongoClient # Added for MongoDB
 
 # 1. Configuration & Setup
 load_dotenv(override=True)  # Forces reload of .env
@@ -15,6 +17,19 @@ CORS(app)
 
 # Configure Google Gemini
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+# ---------------------------------------------------------
+# NEW: MongoDB Configuration
+# ---------------------------------------------------------
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+try:
+    client = MongoClient(MONGO_URI)
+    db = client["actionpoint_db"]  # Create/Connect to database
+    users_collection = db["users"] # Create/Connect to users collection
+    print("Connected to MongoDB successfully!")
+except Exception as e:
+    print(f"Failed to connect to MongoDB: {e}")
+# ---------------------------------------------------------
 
 # Load Local Whisper Model (This runs on your computer!)
 # 'base' is a good balance of speed and accuracy. Try 'small' if you want better results.
@@ -25,6 +40,68 @@ UPLOAD_FOLDER = "temp_uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
+# ---------------------------------------------------------
+# NEW: Authentication Endpoints
+# ---------------------------------------------------------
+@app.route("/api/signup", methods=["POST"])
+def signup():
+    data = request.json
+    name = data.get("name")
+    email = data.get("email")
+    password = data.get("password")
+
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
+
+    # 1. Check if user already exists in MongoDB
+    existing_user = users_collection.find_one({"email": email})
+    if existing_user:
+        return jsonify({"error": "User with this email already exists"}), 409
+
+    # 2. Hash the password for security
+    hashed_password = generate_password_hash(password)
+
+    # 3. Save to MongoDB
+    new_user = {
+        "name": name,
+        "email": email,
+        "password": hashed_password
+    }
+    users_collection.insert_one(new_user)
+
+    return jsonify({"status": "success", "message": "User registered successfully"}), 201
+
+
+@app.route("/api/login", methods=["POST"])
+def login():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
+
+    # 1. Find user by email
+    user = users_collection.find_one({"email": email})
+
+    # 2. Check if user exists AND password matches the hashed password
+    if not user or not check_password_hash(user["password"], password):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    # (Note: In a production app, you would generate and return a JWT token here)
+    
+    return jsonify({
+        "status": "success", 
+        "message": "Login successful",
+        "user": {
+            "name": user.get("name"),
+            "email": user.get("email")
+        }
+    }), 200
+# ---------------------------------------------------------
+
+
+# Process meeting endpoint
 @app.route("/api/process-meeting", methods=["POST"])
 def process_meeting():
     print("... Incoming Audio File ...")

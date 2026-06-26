@@ -1,157 +1,324 @@
 :root {
-  --bg: #0f172a;
-  --card: #1e293b;
-  --text: #f1f5f9;
+  --bg-dark: #09090b;
+  --bg-panel: #121214;
+  --bg-card: #18181b;
+  --border: #27272a;
+  --text-main: #f4f4f5;
+  --text-muted: #a1a1aa;
   --primary: #3b82f6;
+  --primary-hover: #2563eb;
   --danger: #ef4444;
-  --success: #22c55e;
 }
 
 body {
   margin: 0;
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
 }
 
-.app-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 20px;
+h2, h3 {
+  margin-top: 0;
+  font-weight: 500;
 }
 
-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.icon {
-  vertical-align: middle;
-  margin-right: 10px;
-}
-
-/* Buttons */
+/* --- Buttons --- */
 .btn {
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  transition: transform 0.1s;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  color: var(--text-main);
 }
 
-.btn:active {
-  transform: scale(0.98);
-}
-
-.start {
+.primary-btn {
   background: var(--primary);
   color: white;
 }
+.primary-btn:hover { background: var(--primary-hover); }
 
-.stop {
-  background: var(--danger);
-  color: white;
-}
+.full-width { width: 100%; }
+.mt-4 { margin-top: 16px; }
+.text-center { text-align: center; }
+.text-blue { color: var(--primary); }
+.text-muted { color: var(--text-muted); }
+.flex-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
-.analyze {
-  background: var(--success);
-  color: white;
-  width: 100%;
+/* --- Auth Screens --- */
+.auth-container {
+  display: flex;
+  height: 100vh;
+  align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  background: radial-gradient(circle at top left, #1a1a2e, var(--bg-dark));
 }
 
-/* Cards */
-.recorder-card,
-.result-card {
-  background: var(--card);
-  padding: 25px;
+.auth-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-.controls {
+.auth-brand {
+  margin-bottom: 30px;
+}
+.auth-brand h2 { margin: 10px 0 4px; font-size: 24px; }
+.auth-brand p { margin: 0; color: var(--text-muted); font-size: 14px; }
+
+.input-group { margin-bottom: 20px; }
+.input-group label { display: block; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); }
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 12px;
+}
+.input-wrapper svg { color: var(--text-muted); }
+.input-wrapper input {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 12px;
+  width: 100%;
+  outline: none;
+}
+
+.auth-switch {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.auth-switch span { color: var(--primary); cursor: pointer; }
+
+/* --- Dashboard Layout --- */
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+.sidebar-brand h3 { margin: 0; font-size: 18px; }
+.sidebar-brand span { font-size: 12px; color: var(--text-muted); }
+
+.new-meeting-btn {
+  background: var(--primary);
+  color: white;
+  margin-bottom: 24px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.sidebar-nav a:hover, .sidebar-nav a.active {
+  background: var(--bg-card);
+  color: var(--text-main);
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.avatar {
+  width: 32px; height: 32px;
+  background: var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold;
+}
+.user-info { flex: 1; display: flex; flex-direction: column; overflow: hidden;}
+.user-info .name { font-size: 14px; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
+.user-info .email { font-size: 12px; color: var(--text-muted); white-space: nowrap; text-overflow: ellipsis; }
+.logout-btn { font-size: 12px; color: var(--danger); background: none; border: none; cursor: pointer; padding: 0;}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-dark);
+  padding: 24px 32px;
+  overflow-y: auto;
+}
+
+.main-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  background: var(--bg-panel);
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+.dot.recording { background: var(--danger); animation: pulse 1.5s infinite; }
+
+/* Grid Layout */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 24px;
+  flex: 1;
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Recorder */
+.visualizer-placeholder {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  min-height: 200px;
+  margin: 30px 0;
+}
+.visualizer-placeholder .bar {
+  width: 6px;
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.recorder-controls {
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+}
+.control-btn {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+}
+.control-btn.play { background: var(--primary); }
+.control-btn.stop { background: var(--danger); }
+
+.audio-player { width: 100%; height: 40px; outline: none; }
+
+/* Results */
+.analysis-results {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100%;
 }
 
-audio {
-  width: 100%;
-  margin-top: 10px;
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  flex: 1;
+}
+
+.scrollable {
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 /* Tasks */
-.task-item {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 15px;
+.trello-btn {
+  background: #0052cc; /* Trello Blue */
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.task-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  margin-bottom: 10px;
-  border-left: 4px solid var(--primary);
+  padding: 16px;
+  margin-bottom: 12px;
 }
-
-.task-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.task-title {
-  font-weight: bold;
-}
-
-.badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8em;
-}
-
-.high {
-  background: #7f1d1d;
-  color: #fca5a5;
-}
-
-.medium {
-  background: #713f12;
-  color: #fde047;
-}
-
-.low {
-  background: #1e3a8a;
-  color: #93c5fd;
-}
-
-.spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Add this to the bottom of App.css */
-.task-header-row {
+.task-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
+.priority-dot { width: 10px; height: 10px; border-radius: 50%; }
+.priority-dot.high { background: var(--danger); }
+.priority-dot.medium { background: #eab308; }
+.priority-dot.low { background: var(--primary); }
 
-.sync {
-  background-color: #0079bf;
-  /* Trello Blue */
-  color: white;
-  font-size: 14px;
-  padding: 8px 16px;
+.task-desc { margin: 0 0 12px 0; font-size: 13px; color: var(--text-muted); }
+.task-assignee { font-size: 12px; color: var(--text-muted); }
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(--text-muted);
 }
+.empty-state p { max-width: 250px; margin-top: 16px;}
+
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
